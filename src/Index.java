@@ -1,7 +1,10 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Index {
 	private HashMap<String, String> hashMap;
@@ -36,5 +39,25 @@ public class Index {
 		System.out.println(toAdd.sha1Code(fileName));
 		hashMap.put(fileName, toAdd.sha1Code(fileName));
 		System.out.println(hashMap);
+		updateIndexFile();
+	}
+	
+	public void remove(String fileName) throws FileNotFoundException {
+		hashMap.remove(fileName);
+		deleteFile(fileName);
+		updateIndexFile();
+	}
+	
+	public void deleteFile(String fileName) {
+		File file = new File(fileName); 
+	    file.delete();
+	}
+	
+	public void updateIndexFile() throws FileNotFoundException {
+		PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + "/index.txt");
+		for (Map.Entry<String, String> entry : hashMap.entrySet()) {
+		    writer.println(entry.getKey() + " : " + entry.getValue());
+		}
+		writer.close();
 	}
 }
