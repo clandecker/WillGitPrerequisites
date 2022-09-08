@@ -17,7 +17,6 @@ public class Blob {
 	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         Blob fileHash = new Blob("/Users/willsherwood/eclipse-workspace/GitPrerequisites/test.txt");
-        System.out.println(fileHash.sha1Code("test.txt"));
 	}
 	
 	public Blob (String filePath) throws NoSuchAlgorithmException, IOException {

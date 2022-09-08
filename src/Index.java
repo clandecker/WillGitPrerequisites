@@ -12,6 +12,7 @@ public class Index {
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 		Index myGit = new Index();
 		myGit.add("/Users/willsherwood/eclipse-workspace/GitPrerequisites/test.txt");
+		myGit.remove("/Users/willsherwood/eclipse-workspace/GitPrerequisites/test.txt");
 	}
 	
 	public Index () throws IOException {
@@ -35,10 +36,7 @@ public class Index {
 
 	public void add(String fileName) throws NoSuchAlgorithmException, IOException {
 		Blob toAdd = new Blob(fileName);
-		System.out.println(fileName);
-		System.out.println(toAdd.sha1Code(fileName));
 		hashMap.put(fileName, toAdd.sha1Code(fileName));
-		System.out.println(hashMap);
 		updateIndexFile();
 	}
 	
