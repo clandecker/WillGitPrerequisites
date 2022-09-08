@@ -11,8 +11,8 @@ public class Index {
 
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 		Index myGit = new Index();
-		myGit.add("/Users/willsherwood/eclipse-workspace/GitPrerequisites/test.txt");
-		myGit.remove("/Users/willsherwood/eclipse-workspace/GitPrerequisites/test.txt");
+		myGit.add("test.txt");
+		myGit.remove("test.txt");
 	}
 	
 	public Index () throws IOException {
@@ -26,12 +26,12 @@ public class Index {
 	}
 	
 	public void createFile() throws IOException {
-		File file = new File(System.getProperty("user.dir") + "/index.txt");
+		File file = new File("index.txt");
 		file.createNewFile();
 	}
 	
 	public void createDirectory() {
-		new File(System.getProperty("user.dir")+ "/objects/").mkdirs();
+		new File("/objects/").mkdirs();
 	}
 
 	public void add(String fileName) throws NoSuchAlgorithmException, IOException {
@@ -41,8 +41,9 @@ public class Index {
 	}
 	
 	public void remove(String fileName) throws FileNotFoundException {
+		String sha1 = hashMap.get(fileName);
 		hashMap.remove(fileName);
-		deleteFile(fileName);
+		deleteFile("objects/" + sha1);
 		updateIndexFile();
 	}
 	
