@@ -34,7 +34,7 @@ public class Blob {
 	}
 	
 	public String sha1Code(String fileName) throws IOException, NoSuchAlgorithmException {
-        FileInputStream fileInputStream = new FileInputStream(System.getProperty("user.dir")+ "/" + fileName);
+        FileInputStream fileInputStream = new FileInputStream(fileName);
         MessageDigest digest = MessageDigest.getInstance("SHA-1");
         DigestInputStream digestInputStream = new DigestInputStream(fileInputStream, digest);
         byte[] bytes = new byte[1024];
@@ -78,19 +78,19 @@ public class Blob {
 		    }
 		}
 	 
-	public void zipFile(String fileName) throws IOException {
-			StringBuilder sb = new StringBuilder();
-			sb.append("Test String");
-	
-			File file = new File(fileName + ".zip");
-			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
-			ZipEntry e = new ZipEntry(fileName);
-			out.putNextEntry(e);
-	
-			byte[] data = sb.toString().getBytes();
-			out.write(data, 0, data.length);
-			out.closeEntry();
-	
-			out.close();
-	}
+//	public void zipFile(String fileName) throws IOException {
+//			StringBuilder sb = new StringBuilder();
+//			sb.append("Test String");
+//	
+//			File file = new File(fileName + ".zip");
+//			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
+//			ZipEntry e = new ZipEntry(fileName);
+//			out.putNextEntry(e);
+//	
+//			byte[] data = sb.toString().getBytes();
+//			out.write(data, 0, data.length);
+//			out.closeEntry();
+//	
+//			out.close();
+//	}
 }
