@@ -38,6 +38,7 @@ public class Tree {
         digestInputStream.close();
         byte[] resultByteArry = digest.digest();
         return bytesToHexString(resultByteArry);
+	}
     
 
 	
