@@ -11,10 +11,8 @@ public class Index {
 
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 		Index myGit = new Index();
-		myGit.add("test.txt");
+		myGit.add("test1.txt");
 		myGit.add("test2.txt");
-		myGit.remove("test.txt");
-		myGit.remove("test2.txt");
 	}
 	
 	public Index () throws IOException {
