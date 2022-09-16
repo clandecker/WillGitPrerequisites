@@ -6,21 +6,21 @@ import java.security.NoSuchAlgorithmException;
 
 public class Tree {
 	String input;
-	ArrayList <String> listy;
+	ArrayList <String> list;
 	String s;
 	
 	
 	public Tree() throws NoSuchAlgorithmException, IOException {
 		input = "";
-		listy = new ArrayList<String>();
+		list = new ArrayList<String>();
 		s = "";
 		writeToFile(filename());
 	}
 	
 	
 	public String listToString() {
-		for (int i = 0; i < listy.size(); i++) {
-			s+= listy.get(i) + "\n";
+		for (int i = 0; i < list.size(); i++) {
+			s+= list.get(i) + "\n";
 		}
 		return s;
 	}
@@ -54,13 +54,13 @@ public class Tree {
 	        return sb.toString();
 	 }
 	 
-	public void writeToFile (String filename) {
+	 public void writeToFile (String filename) {
 			File file = new File("Test/index.txt");
 		    BufferedWriter bf = null;
 	        try {
 	            bf = new BufferedWriter(new FileWriter(file));
-	            for (int i = 0; i < listy.size(); i++) {
-	                bf.write(listy.get(i));
+	            for (int i = 0; i < list.size(); i++) {
+	                bf.write(list.get(i));
 	                bf.newLine();
 	            }
 	              bf.flush();
@@ -76,5 +76,6 @@ public class Tree {
 	            }
 	        }
 		}
+	 
 	
 }

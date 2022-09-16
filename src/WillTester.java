@@ -63,4 +63,5 @@ class WillTester {
 		File file = new File("objects/b34bcfc4d490f93ed9cf4e560c608b58cd688c24");
 		assertTrue(file.exists());
 	}
+
 }
