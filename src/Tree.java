@@ -62,7 +62,9 @@ public class Tree {
 	            bf = new BufferedWriter(new FileWriter(file));
 	            for (int i = 0; i < list.size(); i++) {
 	                bf.write(list.get(i));
-	                bf.newLine();
+	                if (i != list.size() - 1) {
+	                	bf.newLine();
+	            	}
 	            }
 	              bf.flush();
 	        }
