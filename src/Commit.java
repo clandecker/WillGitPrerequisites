@@ -29,7 +29,7 @@ public class Commit {
 	public static void main (String [] args) throws IOException {
 		Commit com1=new Commit("pTree", "summary 1", "Casey Landecker", "");
 		Commit com2=new Commit("pTree2", "summary 2", "Casey Landecker", "e541de868790aa5aab328bcfb6071eb61689bddd");
-		Commit com3=new Commit("pTree3", "summary 3", "Casey Landecker", "86e928c992896dfc55e4b67b31b96acfa23a36d7");
+		//Commit com3=new Commit("pTree3", "summary 3", "Casey Landecker", "86e928c992896dfc55e4b67b31b96acfa23a36d7");
 	}
 	
 	public Commit(String pTree, String summary, String author, String previousPointer) throws IOException {
@@ -112,7 +112,12 @@ public class Commit {
 		file.createNewFile();
 		PrintWriter writer = new PrintWriter("./objects/" + fileName);
 		writer.println(pTree);
-		writer.println(previousPointer);
+		if (!previousPointer.equals("")) {
+			writer.println("objects/"+previousPointer);
+		}
+		else {
+			writer.println();
+		}		
 		writer.println(nextPointer);
 		writer.println(author);
 		writer.println(date);
