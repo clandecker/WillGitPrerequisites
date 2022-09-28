@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Formatter;
 
+//change commit to create a tree object
+//remove pTree from constructor 
 public class Commit {
 	private Commit nextPointer = null;
 	private Commit previousPointer = null;
