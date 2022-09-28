@@ -18,7 +18,7 @@ import java.util.zip.ZipOutputStream;
 public class Blob {
 	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-        Blob fileHash = new Blob("/Users/willsherwood/eclipse-workspace/GitPrerequisites/test.txt");
+       
 	}
 	
 	public Blob (String fileName) throws NoSuchAlgorithmException, IOException {
