@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,14 +13,17 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Formatter;
 
 //change commit to create a tree object
 //remove pTree from constructor 
 public class Commit {
+	ArrayList<String> treeContents=new ArrayList<String>();
+	
 	private String nextPointer = "";
 	private String previousPointer = "";
-	private String pTree = null;
+	private String pTree = "";
 	
 	private String summary = null;
 	private String author = null;
@@ -44,6 +48,7 @@ public class Commit {
 		}
 		
 		generateFile();
+		
 	}
 	
 	public void changeParentFile(String par) throws IOException {
@@ -136,4 +141,34 @@ public class Commit {
 	    formatter.close();
 	    return result;
 	}
+	
+	public void getTreeContents() throws IOException{
+		//adds in blobs from index
+		BufferedReader buff=new BufferedReader(new FileReader("index.txt"));
+		String indexLine;
+		String fileName="";
+		String fileHash="";
+	    while ((indexLine = buff.readLine()) != null) {
+	    	int i=0;
+	    	//while you are still reading in the file name
+	    	while(!indexLine.substring(i,i+3).equals(" : ")) {	
+	    		fileName+=indexLine.charAt(i);
+	    		i++;
+	    	}
+	    	
+	    	//getting fileHash from index
+	    	fileHash=indexLine.substring(i+3);
+	    	//creating correctly formatted treeLine
+	    	String treeLine="blob : "+fileHash+ " "+ fileName;
+	    	//adds treeLine to treeContents
+	    	treeContents.add(treeLine);	    	
+	    }
+	    
+	    //adds previousTree if one exists
+	    if (!pTree.equals("")) {
+	    	treeContents.add("tree : "+ pTree);
+	    }	   	    	    				 		
+ 	}
+	
+	
 }
