@@ -1,3 +1,0 @@
-test1.txt : 43d515f3869fcc92409d1df8dacf6bfe1d6195fa
-test2.txt : f65ab9ebff94f507b1b67b225b369068681ec8bb
-test3.txt : g64ab9ebff94f507b1b67b225b369068681ec8bb

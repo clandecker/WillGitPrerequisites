@@ -48,14 +48,17 @@ public class Commit {
 		//change parent file if needed 		
 		if (!previousPointer.equals("")) {
 			changeParentFile(previousPointer);
-		}
-		
+		}		
 		//create tree
 		setTreeContents();
 		currentTree=new Tree(treeContents);	
 		
 		//generateCommit 
 		generateFile();
+		
+		//clear Index
+		clearIndex();
+		
 	}
 	
 	public void changeParentFile(String par) throws IOException {
@@ -190,7 +193,12 @@ public class Commit {
 		return previousTreeSha; 		
 	}
 	
-	
+	public void clearIndex() throws IOException {
+		File file = new File("index.txt");
+		file.delete();
+		file.createNewFile();
+	}
+		
 	
 	
 }
