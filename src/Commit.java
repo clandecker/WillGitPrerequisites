@@ -23,32 +23,40 @@ public class Commit {
 	
 	private String nextPointer = "";
 	private String previousPointer = "";
-	private String pTree = "";
+	private Tree currentTree;
 	
 	private String summary = null;
 	private String author = null;
 	private String date = null;
 
 	
-	public static void main (String [] args) throws IOException {
-		Commit com1=new Commit("pTree", "summary 1", "Casey Landecker", "");
-		Commit com2=new Commit("pTree2", "summary 2", "Casey Landecker", "e541de868790aa5aab328bcfb6071eb61689bddd");
-		//Commit com3=new Commit("pTree3", "summary 3", "Casey Landecker", "86e928c992896dfc55e4b67b31b96acfa23a36d7");
+	public static void main (String [] args) throws IOException, NoSuchAlgorithmException {
+		Commit com1=new Commit( "summary 1", "Casey Landecker", "");
+		
+		//Commit com2=new Commit( "summary 2", "Casey Landecker", "e541de868790aa5aab328bcfb6071eb61689bddd");
+		//Commit com3=new Commit( "summary 3", "Casey Landecker", "86e928c992896dfc55e4b67b31b96acfa23a36d7");
 	}
 	
-	public Commit(String pTree, String summary, String author, String previousPointer) throws IOException {
-		this.pTree = pTree;
+	public Commit( String summary, String author, String previousPointer) throws IOException, NoSuchAlgorithmException {
+		//Initialize all variables
+		
 		this.summary = summary;
 		this.author = author;
 		this.date = getDate();
-		
 		this.previousPointer = previousPointer;
+		
+		
+		//change parent file if needed 		
 		if (!previousPointer.equals("")) {
 			changeParentFile(previousPointer);
 		}
 		
-		generateFile();
+		//create tree
+		setTreeContents();
+		currentTree=new Tree(treeContents);	
 		
+		//generateCommit 
+		generateFile();
 	}
 	
 	public void changeParentFile(String par) throws IOException {
@@ -111,12 +119,12 @@ public class Commit {
 	    return sha1;
 	}
 	
-	public void generateFile() throws IOException {
+	public void generateFile() throws IOException, NoSuchAlgorithmException {
 		String fileName = getSha1(sha1Contents());
 		File file = new File("./objects/" + fileName);
 		file.createNewFile();
 		PrintWriter writer = new PrintWriter("./objects/" + fileName);
-		writer.println(pTree);
+		writer.println(currentTree.filename()); //gets currentTree filename for first line
 		if (!previousPointer.equals("")) {
 			writer.println("objects/"+previousPointer);
 		}
@@ -142,33 +150,48 @@ public class Commit {
 	    return result;
 	}
 	
-	public void getTreeContents() throws IOException{
-		//adds in blobs from index
-		BufferedReader buff=new BufferedReader(new FileReader("index.txt"));
-		String indexLine;
-		String fileName="";
-		String fileHash="";
-	    while ((indexLine = buff.readLine()) != null) {
-	    	int i=0;
-	    	//while you are still reading in the file name
-	    	while(!indexLine.substring(i,i+3).equals(" : ")) {	
-	    		fileName+=indexLine.charAt(i);
-	    		i++;
-	    	}
-	    	
-	    	//getting fileHash from index
-	    	fileHash=indexLine.substring(i+3);
-	    	//creating correctly formatted treeLine
-	    	String treeLine="blob : "+fileHash+ " "+ fileName;
-	    	//adds treeLine to treeContents
-	    	treeContents.add(treeLine);	    	
+	public void setTreeContents() throws IOException{
+		getIndexContents();	    
+	    //adds previousTree if one exists
+	    if (!previousPointer.equals("")) {
+	    	treeContents.add("tree : "+ getPreviousTree(previousPointer));
 	    }
 	    
-	    //adds previousTree if one exists
-	    if (!pTree.equals("")) {
-	    	treeContents.add("tree : "+ pTree);
-	    }	   	    	    				 		
  	}
+	
+	public void getIndexContents() throws IOException {
+		//adds in blobs from index
+				BufferedReader buff=new BufferedReader(new FileReader("index.txt"));
+				String indexLine;
+			    while ((indexLine = buff.readLine()) != null) {
+			    	String fileName="";
+			    	int i=0;
+			    	//while you are still reading in the file name
+			    	while(!indexLine.substring(i,i+3).equals(" : ")) {	
+			    		fileName+=indexLine.charAt(i);
+			    		i++;
+			    	}
+			    	
+			    	//getting fileHash from index
+			    	String fileHash=indexLine.substring(i+3);
+			    	//creating correctly formatted treeLine
+			    	String treeLine="blob : "+fileHash+ " "+ fileName;
+			    	System.out.println(treeLine+ "\n");
+			    	//adds treeLine to treeContents
+			    	treeContents.add(treeLine);	 
+			    				    	
+			    }
+			    buff.close();
+	}
+	
+	public String getPreviousTree(String fileName) throws IOException {
+		BufferedReader buff=new BufferedReader(new FileReader("objects/"+previousPointer));
+		String previousTreeSha=buff.readLine();
+		buff.close();
+		return previousTreeSha; 		
+	}
+	
+	
 	
 	
 }
