@@ -29,11 +29,25 @@ public class Commit {
 	private String author = null;
 	private String date = null;
 
-	
 	public static void main (String [] args) throws IOException, NoSuchAlgorithmException {
-		Commit com1=new Commit( "summary 1", "Casey Landecker", "");		
-		Commit com2=new Commit( "summary 2", "Casey Landecker", "cf37aaabc98dee8b19722ac3099f29aae1179f74");
-		//Commit com3=new Commit( "summary 3", "Casey Landecker", "86e928c992896dfc55e4b67b31b96acfa23a36d7");
+		Index index=new Index();
+		//commit #1
+		index.add("test1.txt");
+		index.add("test2.txt");				
+		Commit com1=new Commit( "commit 1", "Casey Landecker", "");
+		
+		//commit #2
+		index.add("test3.txt");				
+		Commit com2=new Commit( "commit 2", "Casey Landecker", "a3ac45ca3dc24a219582543920c2ba384cdc99ff");
+		
+		//commit #3
+		index.add("test4.txt");
+		index.add("test5.txt");
+		Commit com3=new Commit( "commit 3", "Casey Landecker", "339e404a30c02d46ff08ac29b6b17f5be80b8bbc");
+		
+		//commit #4
+		index.add("test6.txt");
+		Commit com4=new Commit( "commit 4", "Casey Landecker", "0a698c1e42c0885f6e605e7705288c9e6078d316");
 	}
 	
 	public Commit( String summary, String author, String previousPointer) throws IOException, NoSuchAlgorithmException {
@@ -57,6 +71,7 @@ public class Commit {
 		generateFile();
 		
 		//clear Index
+		Index.clearMap();
 		clearIndex();
 		
 	}
@@ -178,7 +193,7 @@ public class Commit {
 			    	String fileHash=indexLine.substring(i+3);
 			    	//creating correctly formatted treeLine
 			    	String treeLine="blob : "+fileHash+ " "+ fileName;
-			    	System.out.println(treeLine+ "\n");
+
 			    	//adds treeLine to treeContents
 			    	treeContents.add(treeLine);	 
 			    				    	
@@ -198,6 +213,8 @@ public class Commit {
 		file.delete();
 		file.createNewFile();
 	}
+	
+	
 		
 	
 	

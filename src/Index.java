@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Index {
-	private HashMap<String, String> hashMap;
+	private static HashMap<String, String> hashMap;
 
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 		Index myGit = new Index();
@@ -18,6 +18,10 @@ public class Index {
 	public Index () throws IOException {
 		hashMap = new HashMap<String, String>();
 		init();	
+	}
+	
+	public static void clearMap() {
+		hashMap=new HashMap<String, String>();
 	}
 	
 	public void init () throws IOException {
