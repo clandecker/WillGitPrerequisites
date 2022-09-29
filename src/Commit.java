@@ -31,9 +31,8 @@ public class Commit {
 
 	
 	public static void main (String [] args) throws IOException, NoSuchAlgorithmException {
-		Commit com1=new Commit( "summary 1", "Casey Landecker", "");
-		
-		//Commit com2=new Commit( "summary 2", "Casey Landecker", "e541de868790aa5aab328bcfb6071eb61689bddd");
+		Commit com1=new Commit( "summary 1", "Casey Landecker", "");		
+		Commit com2=new Commit( "summary 2", "Casey Landecker", "cf37aaabc98dee8b19722ac3099f29aae1179f74");
 		//Commit com3=new Commit( "summary 3", "Casey Landecker", "86e928c992896dfc55e4b67b31b96acfa23a36d7");
 	}
 	
