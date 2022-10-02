@@ -20,6 +20,12 @@ public class Index {
 		init();	
 	}
 	
+	public void createHead() throws IOException {
+		File file = new File("HEAD");
+		file.createNewFile();
+	}
+	 
+	
 	public static void clearMap() {
 		hashMap=new HashMap<String, String>();
 	}
@@ -27,6 +33,7 @@ public class Index {
 	public void init () throws IOException {
 		createFile();
 		createDirectory();
+		createHead();
 	}
 	
 	public void createFile() throws IOException {
@@ -44,6 +51,17 @@ public class Index {
 		updateIndexFile();
 	}
 	
+	public void addDeletedFile(String fileName) throws FileNotFoundException {
+		hashMap.put("*deleted*", fileName);
+		updateIndexFile();
+	}
+	
+	public void addEditedFile(String fileName) throws FileNotFoundException {
+		hashMap.put("*edited*", fileName);
+		updateIndexFile();
+	}
+	
+	
 	public void remove(String fileName) throws FileNotFoundException {
 		String sha1 = hashMap.get(fileName);
 		hashMap.remove(fileName);
@@ -59,6 +77,9 @@ public class Index {
 	public void updateIndexFile() throws FileNotFoundException {
 		PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + "/index.txt");
 		for (Map.Entry<String, String> entry : hashMap.entrySet()) {
+			if (entry.getKey().equals("*deleted*") || entry.getKey().equals("*edited*")) {
+				writer.println(entry.getKey()+ " "+entry.getValue());
+			}
 		    writer.println(entry.getKey() + " : " + entry.getValue());
 		}
 		writer.close();

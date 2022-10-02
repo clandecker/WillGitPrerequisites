@@ -20,6 +20,8 @@ import java.util.Formatter;
 //remove pTree from constructor 
 public class Commit {
 	ArrayList<String> treeContents=new ArrayList<String>();
+	//array of all blobs you need to add to tree if you delete a file
+	ArrayList<String> pastBlobs=new ArrayList<String>();
 	
 	private String nextPointer = "";
 	private String previousPointer = "";
@@ -28,18 +30,24 @@ public class Commit {
 	private String summary = null;
 	private String author = null;
 	private String date = null;
+	
+	boolean filesWereDeleted=false;
 
 	public static void main (String [] args) throws IOException, NoSuchAlgorithmException {
 		Index index=new Index();
 		//commit #1
 		index.add("test1.txt");
-		index.add("test2.txt");				
-		Commit com1=new Commit( "commit 1", "Casey Landecker", "");
+		index.add("test2.txt");	
+		index.addDeletedFile("deletedFile");
+		index.addEditedFile("edited file");
+		//Commit com1=new Commit( "commit 1", "Casey Landecker", "");
+		
 		
 		//commit #2
-		index.add("test3.txt");				
-		Commit com2=new Commit( "commit 2", "Casey Landecker", "a3ac45ca3dc24a219582543920c2ba384cdc99ff");
-		
+		index.add("test3.txt");	
+		index.addEditedFile("edited file2");
+		Commit com2=new Commit( "commit 2", "Casey Landecker", "e37253fae70221fde74954f5e879e62332db17ea");
+		/*
 		//commit #3
 		index.add("test4.txt");
 		index.add("test5.txt");
@@ -48,6 +56,7 @@ public class Commit {
 		//commit #4
 		index.add("test6.txt");
 		Commit com4=new Commit( "commit 4", "Casey Landecker", "0a698c1e42c0885f6e605e7705288c9e6078d316");
+		*/
 	}
 	
 	public Commit( String summary, String author, String previousPointer) throws IOException, NoSuchAlgorithmException {
@@ -59,21 +68,37 @@ public class Commit {
 		this.previousPointer = previousPointer;
 		
 		
-		//change parent file if needed 		
+		//change parent file if needed 	
+		//CHANGE THIS SO ITS CHANGE POINTER IN HEAD 
 		if (!previousPointer.equals("")) {
 			changeParentFile(previousPointer);
 		}		
 		//create tree
 		setTreeContents();
-		currentTree=new Tree(treeContents);	
+		currentTree=new Tree(treeContents);		
 		
 		//generateCommit 
 		generateFile();
 		
+		//change Head
+		changeHead();
+		
 		//clear Index
 		Index.clearMap();
-		clearIndex();
+		clearIndex();		
 		
+	}
+	
+	public void changeHead() throws FileNotFoundException {
+		File file=new File("objects/HEAD");
+		file.delete();
+		Path p = Paths.get("HEAD");
+        try {
+            Files.writeString(p, getSha1(sha1Contents()), StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 	
 	public void changeParentFile(String par) throws IOException {
@@ -167,20 +192,53 @@ public class Commit {
 	    return result;
 	}
 	
+	public void addPreviousTreeToTreeContents() throws IOException{
+		if (!previousPointer.equals("")) {
+	    	treeContents.add("tree : "+ getPreviousTree());
+	    }				
+	}
+	
+	public void addPastBlobsToTreeContents() {
+		for (int i=0; i<pastBlobs.size(); i++) {
+			treeContents.add(pastBlobs.get(i));
+		}
+	}
+	
 	public void setTreeContents() throws IOException{
-		getIndexContents();	    
+		//adds contents from index
+		addIndexToTreeContents();	 
+
 	    //adds previousTree if one exists
-	    if (!previousPointer.equals("")) {
-	    	treeContents.add("tree : "+ getPreviousTree(previousPointer));
-	    }
-	    
+		if (filesWereDeleted==false) {
+			addPreviousTreeToTreeContents();
+		}
+
+		    
  	}
 	
-	public void getIndexContents() throws IOException {
+	
+	//must handle deleting and editing separately
+	//create new method that edits deleted if it sees that the index entry starts with *
+	public void addIndexToTreeContents() throws IOException {
 		//adds in blobs from index
 				BufferedReader buff=new BufferedReader(new FileReader("index.txt"));
 				String indexLine;
 			    while ((indexLine = buff.readLine()) != null) {
+			    	
+			    	//if you are deleting a file
+			    	if ((indexLine.charAt(0)=='*')) {
+			    		if((indexLine.charAt(1)=='d')) {
+			    			//adds old stuff to old stuff array
+			    			checkTreeForBlob(getPreviousTree(), indexLine.substring(9));
+			    			//adds old stuff array to treeContents array
+			    			addPastBlobsToTreeContents();
+			    			//changes boolean c
+			    			filesWereDeleted=true;
+			    		}			    		
+			    	}
+			    	
+			    	//if you are just at a blob 
+			    	else {
 			    	String fileName="";
 			    	int i=0;
 			    	//while you are still reading in the file name
@@ -196,26 +254,69 @@ public class Commit {
 
 			    	//adds treeLine to treeContents
 			    	treeContents.add(treeLine);	 
+			    	}
 			    				    	
 			    }
 			    buff.close();
 	}
 	
-	public String getPreviousTree(String fileName) throws IOException {
+	
+	//"deletes" a files
+	public boolean checkTreeForBlob(String tree, String fileName) throws IOException {
+		BufferedReader buff=new BufferedReader(new FileReader("objects/"+tree));
+		String treeLine;
+		while ((treeLine = buff.readLine()) != null) {
+			if (treeLine.contains(fileName)) {
+				if (!getPreviousTreeFromTree(tree).equals("no previous tree")) {
+					//yup, pastBlobs can also have a tree
+					pastBlobs.add(getPreviousTreeFromTree(tree));
+				}				
+				return true;					
+			}
+			//if u are at a blob but no the one you want, add to pastBlobs
+			if (treeLine.substring(0,4).equals("blob")) {
+				pastBlobs.add(treeLine);
+			}
+			if(treeLine.substring(0,4).equals("tree")) {
+				checkTreeForBlob(treeLine.substring(7,47), fileName);
+			}
+			
+		}
+		buff.close();
+		return false;		
+	}
+	
+	
+	
+	
+	
+	//only works for this specific commit
+	public String getPreviousTree() throws IOException {
 		BufferedReader buff=new BufferedReader(new FileReader("objects/"+previousPointer));
 		String previousTreeSha=buff.readLine();
 		buff.close();
 		return previousTreeSha; 		
 	}
 	
+	//if u have any commit sha get previous tree
+	public String getPreviousTreeFromTree(String treeSHA) throws IOException {
+		BufferedReader buff=new BufferedReader(new FileReader("objects/"+treeSHA));
+		String treeLine;
+		while ((treeLine = buff.readLine()) != null) {
+			if(treeLine.charAt(0)==('t')) {
+				return treeLine;
+			}
+		}
+		return "no previous tree";
+	}
+		
+	
 	public void clearIndex() throws IOException {
 		File file = new File("index.txt");
 		file.delete();
 		file.createNewFile();
 	}
-	
-	
-		
+			
 	
 	
 }
