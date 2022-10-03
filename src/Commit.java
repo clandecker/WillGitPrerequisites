@@ -45,18 +45,18 @@ public class Commit {
 		//commit #2
 		index.add("test3.txt");	
 		//index.addEditedFile("edited file2");
-		index.addDeletedFile("test2.txt");
+		//index.addDeletedFile("test2.txt");
 		Commit com2=new Commit( "commit 2", "Casey Landecker", "8d1ac841e44097fe75a577ad425ae75c1b52c118");
-		/*
+		
 		//commit #3
 		index.add("test4.txt");
 		index.add("test5.txt");
-		Commit com3=new Commit( "commit 3", "Casey Landecker", "339e404a30c02d46ff08ac29b6b17f5be80b8bbc");
+		Commit com3=new Commit( "commit 3", "Casey Landecker", "236697ce2c00b1ef2cda28bc10a7e357decda6f8");
 		
 		//commit #4
 		index.add("test6.txt");
-		Commit com4=new Commit( "commit 4", "Casey Landecker", "0a698c1e42c0885f6e605e7705288c9e6078d316");
-		*/
+		Commit com4=new Commit("commit 4", "Casey Landecker", "3c451ade0fcc98ddabcc8e6b4fa9c0d0029ab48a");
+		
 	}
 	
 	public Commit( String summary, String author, String previousPointer) throws IOException, NoSuchAlgorithmException {
