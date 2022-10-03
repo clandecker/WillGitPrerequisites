@@ -1,3 +1,4 @@
+package Git;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,11 +10,11 @@ import java.util.Map;
 public class Index {
 	private static HashMap<String, String> hashMap;
 
-	public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+	/*public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 		Index myGit = new Index();
 		myGit.add("test1.txt");
 		myGit.add("test2.txt");
-	}
+	}*/
 	
 	public Index () throws IOException {
 		hashMap = new HashMap<String, String>();

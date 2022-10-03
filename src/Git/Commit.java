@@ -1,3 +1,4 @@
+package Git;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -39,40 +40,37 @@ public class Commit {
 		index.add("test1.txt");
 		index.add("test2.txt");	
 		//index.addEditedFile("edited file");
-		Commit com1=new Commit( "commit 1", "Casey Landecker", "");
+		Commit com1=new Commit( "commit 1", "Casey Landecker");
 		
 		
 		//commit #2
 		index.add("test3.txt");	
 		//index.addEditedFile("edited file2");
 		//index.addDeletedFile("test2.txt");
-		Commit com2=new Commit( "commit 2", "Casey Landecker", "8d1ac841e44097fe75a577ad425ae75c1b52c118");
+		Commit com2=new Commit( "commit 2", "Casey Landecker");
 		
 		//commit #3
 		index.add("test4.txt");
 		index.add("test5.txt");
-		Commit com3=new Commit( "commit 3", "Casey Landecker", "236697ce2c00b1ef2cda28bc10a7e357decda6f8");
+		Commit com3=new Commit( "commit 3", "Casey Landecker");
 		
 		//commit #4
 		index.add("test6.txt");
-		Commit com4=new Commit("commit 4", "Casey Landecker", "3c451ade0fcc98ddabcc8e6b4fa9c0d0029ab48a");
+		Commit com4=new Commit("commit 4", "Casey Landecker");
 		
 	}
 	
-	public Commit( String summary, String author, String previousPointer) throws IOException, NoSuchAlgorithmException {
+	public Commit( String summary, String author) throws IOException, NoSuchAlgorithmException {
 		//Initialize all variables
 		
 		this.summary = summary;
 		this.author = author;
 		this.date = getDate();
-		this.previousPointer = previousPointer;
-		
-		
-		//change parent file if needed 	
-		//CHANGE THIS SO ITS CHANGE POINTER IN HEAD 
-		if (!previousPointer.equals("")) {
+		if (hasParentCommit()) {
+			previousPointer=getParentCommit();
 			changeParentFile(previousPointer);
-		}		
+		}
+				
 		//create tree
 		setTreeContents();
 		currentTree=new Tree(treeContents);	
@@ -80,6 +78,8 @@ public class Commit {
 		for (int i=0; i<pastBlobs.size();i++) {
 			System.out.println (pastBlobs.get(i)+"\n");
 		}
+		
+		
 		
 		//generateCommit 
 		generateFile();
@@ -93,12 +93,30 @@ public class Commit {
 		
 	}
 	
+	public boolean hasParentCommit() throws IOException {
+		BufferedReader buff=new BufferedReader(new FileReader("HEAD"));
+		String line;
+		if ((line = buff.readLine()) != null) {
+			return true;	
+		}
+		return false;	
+	}
+	
+	public String getParentCommit() throws IOException {
+		BufferedReader buff=new BufferedReader(new FileReader("HEAD"));
+		String line;
+		line = buff.readLine();
+		return line;	
+	}
+	
+	
 	public void changeHead() throws FileNotFoundException {
-		File file=new File("objects/HEAD");
+		File file=new File("HEAD");
 		file.delete();
 		Path p = Paths.get("HEAD");
         try {
             Files.writeString(p, getSha1(sha1Contents()), StandardCharsets.ISO_8859_1);
+            System.out.println(getSha1(sha1Contents()));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
