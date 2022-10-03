@@ -38,15 +38,15 @@ public class Commit {
 		//commit #1
 		index.add("test1.txt");
 		index.add("test2.txt");	
-		index.addDeletedFile("deletedFile");
-		index.addEditedFile("edited file");
-		//Commit com1=new Commit( "commit 1", "Casey Landecker", "");
+		//index.addEditedFile("edited file");
+		Commit com1=new Commit( "commit 1", "Casey Landecker", "");
 		
 		
 		//commit #2
 		index.add("test3.txt");	
-		index.addEditedFile("edited file2");
-		Commit com2=new Commit( "commit 2", "Casey Landecker", "e37253fae70221fde74954f5e879e62332db17ea");
+		//index.addEditedFile("edited file2");
+		index.addDeletedFile("test2.txt");
+		Commit com2=new Commit( "commit 2", "Casey Landecker", "8d1ac841e44097fe75a577ad425ae75c1b52c118");
 		/*
 		//commit #3
 		index.add("test4.txt");
@@ -75,7 +75,11 @@ public class Commit {
 		}		
 		//create tree
 		setTreeContents();
-		currentTree=new Tree(treeContents);		
+		currentTree=new Tree(treeContents);	
+		System.out.println("pastBlobs:\n");
+		for (int i=0; i<pastBlobs.size();i++) {
+			System.out.println (pastBlobs.get(i)+"\n");
+		}
 		
 		//generateCommit 
 		generateFile();
@@ -201,6 +205,7 @@ public class Commit {
 	public void addPastBlobsToTreeContents() {
 		for (int i=0; i<pastBlobs.size(); i++) {
 			treeContents.add(pastBlobs.get(i));
+			System.out.println("past blobs: " + pastBlobs.get(i));
 		}
 	}
 	
@@ -229,7 +234,8 @@ public class Commit {
 			    	if ((indexLine.charAt(0)=='*')) {
 			    		if((indexLine.charAt(1)=='d')) {
 			    			//adds old stuff to old stuff array
-			    			checkTreeForBlob(getPreviousTree(), indexLine.substring(9));
+			    			checkTreeForBlob(getPreviousTree(), indexLine.substring(10));
+			    			System.out.println("checking tree for blob");
 			    			//adds old stuff array to treeContents array
 			    			addPastBlobsToTreeContents();
 			    			//changes boolean c
@@ -262,23 +268,30 @@ public class Commit {
 	
 	
 	//"deletes" a files
+	//THE FILENAME IS WRONG
 	public boolean checkTreeForBlob(String tree, String fileName) throws IOException {
+		System.out.println("fileName: "+ fileName);
 		BufferedReader buff=new BufferedReader(new FileReader("objects/"+tree));
 		String treeLine;
-		while ((treeLine = buff.readLine()) != null) {
+		while ((treeLine = buff.readLine())!= null) {
+			System.out.println("running while loop");
 			if (treeLine.contains(fileName)) {
 				if (!getPreviousTreeFromTree(tree).equals("no previous tree")) {
 					//yup, pastBlobs can also have a tree
 					pastBlobs.add(getPreviousTreeFromTree(tree));
+					System.out.println("this line should not be printing");
 				}				
 				return true;					
 			}
 			//if u are at a blob but no the one you want, add to pastBlobs
-			if (treeLine.substring(0,4).equals("blob")) {
+			//ERROR IS SOMEWHERE HERE
+			else if (treeLine.substring(0,4).equals("blob")) {
 				pastBlobs.add(treeLine);
+				System.out.println("adding to pastBlobs");
 			}
-			if(treeLine.substring(0,4).equals("tree")) {
+			else if(treeLine.substring(0,4).equals("tree")) {// THIS IS NOT THE ERROR
 				checkTreeForBlob(treeLine.substring(7,47), fileName);
+				System.out.println("trying to go into a past tree");
 			}
 			
 		}

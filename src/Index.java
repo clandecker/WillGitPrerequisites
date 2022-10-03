@@ -24,6 +24,7 @@ public class Index {
 		File file = new File("HEAD");
 		file.createNewFile();
 	}
+	
 	 
 	
 	public static void clearMap() {
@@ -80,7 +81,9 @@ public class Index {
 			if (entry.getKey().equals("*deleted*") || entry.getKey().equals("*edited*")) {
 				writer.println(entry.getKey()+ " "+entry.getValue());
 			}
+			else {
 		    writer.println(entry.getKey() + " : " + entry.getValue());
+			}
 		}
 		writer.close();
 	}
