@@ -31,7 +31,7 @@ class GitTester {
 	
 	//commit #2
 	index.add("test3.txt");	
-	index.addDeletedFile("test2.txt");
+	index.addDeletedFile("test1.txt");
 	Commit com2=new Commit( "commit 2", "Casey Landecker");
 	
 	//commit #3

@@ -298,11 +298,8 @@ public class Commit {
 				System.out.println("adding to pastBlobs");
 			}
 			if (treeLine.contains(fileName)) {
-				if (!getPreviousTreeFromTree(tree).equals("no previous tree")) {
-					//yup, pastBlobs can also have a tree
-					pastBlobs.add(getPreviousTreeFromTree(tree));
-					System.out.println("this line should not be printing");
-				}				
+				addTreeDataToPastBlobs(tree);
+				pastBlobs.remove(treeLine);				
 				return true;					
 			}
 			//if u are at a blob but no the one you want, add to pastBlobs
@@ -330,6 +327,7 @@ public class Commit {
 		return previousTreeSha; 		
 	}
 	
+		
 	//if u have any commit sha get previous tree
 	public String getPreviousTreeFromTree(String treeSHA) throws IOException {
 		BufferedReader buff=new BufferedReader(new FileReader("objects/"+treeSHA));
@@ -340,6 +338,15 @@ public class Commit {
 			}
 		}
 		return "no previous tree";
+	}
+	
+	public void addTreeDataToPastBlobs(String tree) throws IOException {
+		BufferedReader buff=new BufferedReader(new FileReader("objects/"+tree));
+		String treeLine;
+		while ((treeLine = buff.readLine()) != null) {
+			pastBlobs.add(treeLine);
+		}
+		buff.close();
 	}
 		
 	
