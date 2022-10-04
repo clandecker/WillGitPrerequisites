@@ -293,6 +293,10 @@ public class Commit {
 		String treeLine;
 		while ((treeLine = buff.readLine())!= null) {
 			System.out.println("running while loop");
+			if (treeLine.substring(0,4).equals("blob") && !treeLine.contains(fileName)) {
+				pastBlobs.add(treeLine);
+				System.out.println("adding to pastBlobs");
+			}
 			if (treeLine.contains(fileName)) {
 				if (!getPreviousTreeFromTree(tree).equals("no previous tree")) {
 					//yup, pastBlobs can also have a tree
@@ -303,11 +307,8 @@ public class Commit {
 			}
 			//if u are at a blob but no the one you want, add to pastBlobs
 			//ERROR IS SOMEWHERE HERE
-			else if (treeLine.substring(0,4).equals("blob")) {
-				pastBlobs.add(treeLine);
-				System.out.println("adding to pastBlobs");
-			}
-			else if(treeLine.substring(0,4).equals("tree")) {// THIS IS NOT THE ERROR
+			
+			if(treeLine.substring(0,4).equals("tree")) {// THIS IS NOT THE ERROR
 				checkTreeForBlob(treeLine.substring(7,47), fileName);
 				System.out.println("trying to go into a past tree");
 			}
